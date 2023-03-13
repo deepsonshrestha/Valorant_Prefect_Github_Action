@@ -2,7 +2,7 @@ name: run main.py
 
 on:
   schedule:
-    - cron: '*/5 * * * *' 
+    - cron: '0 * * * *' 
 
 jobs:
   build:
@@ -22,8 +22,5 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           
-      - name: Authenticate to Prefect dependencies
-        run: |
-          prefect auth login -k pnu_F2rjLX3GtXbeWvQJVI1RiOL5ju4cJ64q7nvq
-      - name: Register flow
-        run: prefect register -p main.py --project prefect_github_automation
+      - name: execute py script # run main.py
+        run: python main.py
