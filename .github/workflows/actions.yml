@@ -1,8 +1,14 @@
 name: run main.py
 
-on: [workflow_dispatch]
+on:
   schedule:
     - cron: '*/5 * * * *' 
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Bump Version
+        default: v1.0.0
+        required: true
 
 jobs:
   build:
