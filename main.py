@@ -1,5 +1,6 @@
 import requests
-from prefect import flow,task
+import prefect
+from prefect import task,Flow,flow
 import psycopg2
 
 from datetime import timezone
@@ -134,7 +135,7 @@ def get_match_flow(region,name,tag,url,puuid):
             pass
     return True
 
-@flow
+@flow(name = 'Valorant_Data_Extract')
 def pull_data():
     result = get_player_details()
     url = 'https://api.henrikdev.xyz/valorant/v3/matches/'
