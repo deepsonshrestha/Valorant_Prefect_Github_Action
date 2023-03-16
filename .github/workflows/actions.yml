@@ -4,11 +4,6 @@ on:
   schedule:
     - cron: '0 * * * *' 
   workflow_dispatch:
-    # inputs:
-    #   version:
-    #     description: Bump Version
-    #     default: v1.0.0
-    #     required: true
 
 jobs:
   build:
@@ -28,7 +23,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
       - name: Authenticate to Prefect dependencies
-        run: prefect cloud login -k pnu_H61D2NiEvB1jSTw2ewvsgE08C2fcyZ2ke20F --workspace "taktundhisgmailcom/brainyeti"
+        run: prefect cloud login -k ${{ secrets.prefect_api_key }} --workspace "${{ secrets.prefect_workspace }}"
         
-      - name: execute py script # run main.py
+      - name: execute py script
         run: python main.py
