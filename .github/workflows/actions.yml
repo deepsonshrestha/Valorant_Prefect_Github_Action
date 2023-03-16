@@ -1,6 +1,6 @@
 name: run main.py
 
-on:
+on: [workflow_dispatch]
   schedule:
     - cron: '*/5 * * * *' 
 
