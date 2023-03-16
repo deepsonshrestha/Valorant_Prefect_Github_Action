@@ -28,7 +28,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
       - name: Authenticate to Prefect dependencies
-        run: prefect cloud login -k pnu_H61D2NiEvB1jSTw2ewvsgE08C2fcyZ2ke20F
+        run: prefect cloud login -k pnu_H61D2NiEvB1jSTw2ewvsgE08C2fcyZ2ke20F --workspace "taktundhisgmailcom/brainyeti"
         
       - name: execute py script # run main.py
         run: python main.py
