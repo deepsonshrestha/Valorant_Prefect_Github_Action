@@ -86,7 +86,7 @@ def metadata_dups_handler(value):
 @task(retries=3,retry_delay_seconds=60)
 def get_match_details(region,name,tag,url):
     modified_url = str(url)+str(region)+'/'+str(name)+'/'+str(tag)
-    response = requests.get(modified_url)
+    response = requests.get(modified_url ,headers={'Authorization': 'HDEV-4ce3185a-47f7-4bee-b5d9-df9c6b08866c'})
     return response
 
 @task
@@ -124,15 +124,18 @@ def filtered_data(response_data, puuid):
 @flow
 def get_match_flow(region,name,tag,url,puuid):
     response=get_match_details(region,name,tag,url)
-    match_data_response = get_match_data(response)
-    for match in match_data_response:
-        match_id = str(match['metadata']['matchid'])
-        print(type(match_id))
+    if response.json()['status'] == 200:
+        match_data_response = get_match_data(response)
+        for match in match_data_response:
+            match_id = str(match['metadata']['matchid'])
+            print(type(match_id))
 
-        if metadata_dups_handler(match_id):
-            filtered_data(match,puuid)
-        else:
-            pass
+            if metadata_dups_handler(match_id):
+                filtered_data(match,puuid)
+            else:
+                pass
+    else:
+        pass
     return True
 
 @flow(name = 'Valorant_Data_Extract')
