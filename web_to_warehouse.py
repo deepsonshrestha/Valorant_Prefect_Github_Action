@@ -37,7 +37,7 @@ def send_in_game_data_to_warehouse(data):
         tagline = record['tagline']
         region = record['region']
         valorant_puuid = record['valorant_puuid']
-        if generic.metadata_dups_handler(dups_check_query,params=(in_game_name, tagline, valorant_puuid)):
+        if generic.dups_handler(dups_check_query,params=(in_game_name, tagline, valorant_puuid)):
             current_timestamp = generic.get_current_utc_timestamp()
             sql = ('''
                 INSERT INTO "raw".user_in_game_details(user_id, in_game_name, tagline, region, valorant_puuid, _loaded_at)
