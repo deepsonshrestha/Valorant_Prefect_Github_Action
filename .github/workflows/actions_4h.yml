@@ -1,8 +1,8 @@
-name: RANNNNNNN
+name: Every four hours
 
 on:
   schedule:
-    - cron: '* * * * *'
+    - cron: '0 */4 * * *'
   workflow_dispatch:
 
 jobs:
@@ -26,4 +26,4 @@ jobs:
         run: prefect cloud login -k ${{ secrets.prefect_api_key }} --workspace "${{ secrets.prefect_workspace }}"
         
       - name: execute py script
-        run: python main.py
+        run: python web_to_warehouse.py
