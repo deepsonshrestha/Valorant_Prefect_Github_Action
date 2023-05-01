@@ -23,7 +23,6 @@ def get_player_details():
             select * from "public".dashboard_user_in_game_details
             '''
         cursor.execute(postgreSQL_select_Query)
-        print("Selecting rows from mobile table using cursor.fetchall")
         player_records = cursor.fetchall()
 
     except (Exception, psycopg2.Error) as error:
