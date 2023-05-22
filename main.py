@@ -60,25 +60,26 @@ def transform_and_load(result):
     dups_check_query = '''
         SELECT match_id FROM raw.metadata WHERE match_id = %s ;
     '''
-    for player_info in result:
-        name = player_info[1]
-        tag = player_info[2]
-        region = player_info[3]
-        puuid = player_info[5]
+    if result is None:
+        for player_info in result:
+            name = player_info[1]
+            tag = player_info[2]
+            region = player_info[3]
+            puuid = player_info[5]
 
-        response=get_match_details(region,name,tag,url)
+            response=get_match_details(region,name,tag,url)
 
-        if response.json()['status'] == 200:
-            match_data_response = get_match_data_in_list(response)
-            for match in match_data_response:
-                match_id = str(match['metadata']['matchid'])
-                if generic.dups_handler(dups_check_query, params = (match_id, )):
-                    transformed_data = transformation(match,puuid)
-                    load_into_warehouse(transformed_data)
-                else:
-                    pass
-        else:
-            pass
+            if response.json()['status'] == 200:
+                match_data_response = get_match_data_in_list(response)
+                for match in match_data_response:
+                    match_id = str(match['metadata']['matchid'])
+                    if generic.dups_handler(dups_check_query, params = (match_id, )):
+                        transformed_data = transformation(match,puuid)
+                        load_into_warehouse(transformed_data)
+                    else:
+                        pass
+            else:
+                pass
     return True
 
 
