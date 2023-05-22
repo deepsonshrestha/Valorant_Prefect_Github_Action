@@ -66,6 +66,7 @@ def get_user_social_account():
     send_social_accounts_data_to_warehouse(list_records)
     return True
 
+@task
 def send_social_accounts_data_to_warehouse(data):
     dups_check_query = '''
         SELECT user_id FROM raw.user_social_details

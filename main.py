@@ -44,10 +44,10 @@ def transformation(response_data, puuid):
     
 @task
 def load_into_warehouse(values):
-    sql = '''
+    sql = ('''
         INSERT INTO "raw".metadata(match_id, map, start_at, duration, mode, season_id, cluster, rounds_played, _loaded_at, players_data, puuid, teams)
         VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
-    '''
+    ''')
     generic.sql_execute(sql,values)
     return True
 
@@ -69,7 +69,7 @@ def transform_and_load(result):
             match_data_response = get_match_data_in_list(response)
             for match in match_data_response:
                 match_id = str(match['metadata']['matchid'])
-                if generic.dups_handler(dups_check_query,params=(match_id)):
+                if generic.dups_handler(dups_check_query,params = match_id):
                     transformed_data = transformation(match,puuid)
                     load_into_warehouse(transformed_data)
                 else:
