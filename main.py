@@ -18,6 +18,17 @@ def get_player_details():
 def get_match_details(region,name,tag,url):
     modified_url = str(url)+str(region)+'/'+str(name)+'/'+str(tag)
     response = requests.get(modified_url ,headers={'Authorization': str(api_key)})
+    print(response.status_code)
+    print('\n')
+    print('\n')
+    print('\n')
+    print('\n')
+    print('\n')
+
+    print('\n')
+    print('\n')
+    print('\n')
+    print('\n')
     return response
 
 @task
