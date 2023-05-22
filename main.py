@@ -24,7 +24,7 @@ def get_match_details(region,name,tag,url):
     print('\n')
     print('\n')
     print('\n')
-
+    print(response)
     print('\n')
     print('\n')
     print('\n')
