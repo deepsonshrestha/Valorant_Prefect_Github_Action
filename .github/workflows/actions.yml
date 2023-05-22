@@ -23,12 +23,10 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Get Valorant API Key
-        env:
-          API_KEY: ${{ secrets.API_KEY }}
-
       - name: Authenticate to Prefect dependencies
         run: prefect cloud login -k ${{ secrets.prefect_api_key }} --workspace "${{ secrets.prefect_workspace }}"
         
       - name: execute py script
+        env:
+          API_KEY: ${{ secrets.API_KEY }}
         run: python main.py
