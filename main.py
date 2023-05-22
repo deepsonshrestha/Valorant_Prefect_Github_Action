@@ -18,17 +18,6 @@ def get_player_details():
 def get_match_details(region,name,tag,url):
     modified_url = str(url)+str(region)+'/'+str(name)+'/'+str(tag)
     response = requests.get(modified_url ,headers={'Authorization': str(api_key)})
-    print(response.status_code)
-    print('\n')
-    print('\n')
-    print('\n')
-    print('\n')
-    print('\n')
-    print(response)
-    print('\n')
-    print('\n')
-    print('\n')
-    print('\n')
     return response
 
 @task
@@ -71,7 +60,7 @@ def transform_and_load(result):
     dups_check_query = '''
         SELECT match_id FROM raw.metadata WHERE match_id = %s ;
     '''
-    if result is None:
+    if result is not None:
         for player_info in result:
             name = player_info[1]
             tag = player_info[2]
