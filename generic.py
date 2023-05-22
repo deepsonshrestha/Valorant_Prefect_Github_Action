@@ -58,6 +58,7 @@ def dups_handler(dups_check_query,params):
 
 #functions to connect to web database
 def connect_to_web_database(sql):
+    player_records = []
     try:
         connection = psycopg2.connect(database="Web",
                                 host="db.yzqgftlyckkypgpmyjig.supabase.co",
@@ -76,9 +77,10 @@ def connect_to_web_database(sql):
         if connection:
             cursor.close()
             connection.close()
-        return player_records
+            return player_records
         
 def connect_to_raw_database(sql):
+    records = []
     try:
         connection = psycopg2.connect(database="DataWarehouse",
                                 host="db.yzqgftlyckkypgpmyjig.supabase.co",
