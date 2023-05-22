@@ -39,7 +39,8 @@ def transformation(response_data, puuid):
     rounds_played = str(response_data['metadata']['rounds_played'])
     players_data = str(response_data['players'])
     teams_data = str(response_data['teams'])
-    return (match_id, played_map, start_at, duration, mode, season_id, cluster, rounds_played, current_timestamp, players_data, puuid, teams_data)
+    result = (match_id, played_map, start_at, duration, mode, season_id, cluster, rounds_played, current_timestamp, players_data, puuid, teams_data)
+    return result
     
 @task
 def load_into_warehouse(values):
