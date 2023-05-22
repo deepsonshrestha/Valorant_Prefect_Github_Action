@@ -1,86 +1,15 @@
 import requests
-import prefect
-from prefect import task,Flow,flow
-import psycopg2
-
+from prefect import task,flow
+import generic
 from datetime import timezone
-import datetime
-   
-def get_current_utc_timestamp():
-    dt = datetime.datetime.now(timezone.utc)
-    utc_time = dt.replace(tzinfo=timezone.utc)
-    return utc_time
 
+@task
 def get_player_details():
-    try:
-        connection = psycopg2.connect(database="Web",
-                                host="db.yzqgftlyckkypgpmyjig.supabase.co",
-                                user="postgres",
-                                password="d7d8xAQuj7GSDvst",
-                                port="5432")
-        cursor = connection.cursor()
-        postgreSQL_select_Query = '''
-            select * from "public".dashboard_user_in_game_details
-            '''
-        cursor.execute(postgreSQL_select_Query)
-        player_records = cursor.fetchall()
-
-    except (Exception, psycopg2.Error) as error:
-        print("Error while fetching data from PostgreSQL", error)
-
-    finally:
-        # closing database connection.
-        if connection:
-            cursor.close()
-            connection.close()
-            print("PostgreSQL connection is closed")
-            return player_records
-
-def get_conn_details():
-    conn = psycopg2.connect(database="DataWarehouse",
-                            host="db.yzqgftlyckkypgpmyjig.supabase.co",
-                            user="postgres",
-                            password="d7d8xAQuj7GSDvst",
-                            port="5432")
-    conn.autocommit = True
-    return conn
-
-def establish_conn():
-    conn = get_conn_details()
-    cursor = conn.cursor()
-    return cursor
-
-def sql_execute(sql,values):
-    cursor = establish_conn()
-    try:
-        cursor.execute(sql,values)
-        conn_commit()
-    except Exception as error:
-        print ("Oops! An exception has occured:", error)
-        print ("Exception TYPE:", type(error))
-
-def conn_commit():
-    conn = get_conn_details()
-    conn.commit()
-
-def conn_terminate():
-    conn = get_conn_details()
-    conn.close()
-    
-def metadata_dups_handler(value):
-    cursor = establish_conn()
-    sql = ('''
-        SELECT match_id FROM raw.metadata WHERE match_id = %s;
-    ''')
-    cursor.execute(sql,[value])
-    data = cursor.fetchone()
-    if data is None:
-        print('No value in table')
-        return True
-    else:
-        print('Found in table')
-        return False
-
+    sql = ''''
+        select * from "public".dashboard_user_in_game_details
+    '''
+    data = generic.connect_to_web_database(sql)
+    return data
 
 @task(retries=3,retry_delay_seconds=60)
 def get_match_details(region,name,tag,url):
@@ -89,7 +18,7 @@ def get_match_details(region,name,tag,url):
     return response
 
 @task
-def get_match_data(response):
+def get_match_data_in_list(response):
     length = len(response.json()['data'])
     listx = []
     for i in range(length):
@@ -98,9 +27,8 @@ def get_match_data(response):
     return listx
 
 @task
-def filtered_data(response_data, puuid):
-    current_timestamp = str(get_current_utc_timestamp())
-    # print(response_data['metadata'])
+def transformation(response_data, puuid):
+    current_timestamp = str(generic.get_current_utc_timestamp())
     match_id = str(response_data['metadata']['matchid'])
     played_map = str(response_data['metadata']['map'])
     start_at = str(response_data['metadata']['game_start'])
@@ -111,47 +39,47 @@ def filtered_data(response_data, puuid):
     rounds_played = str(response_data['metadata']['rounds_played'])
     players_data = str(response_data['players'])
     teams_data = str(response_data['teams'])
-    print(teams_data)
+    return (match_id, played_map, start_at, duration, mode, season_id, cluster, rounds_played, current_timestamp, players_data, puuid, teams_data)
+    
+@task
+def load_into_warehouse(values):
     sql = ('''
         INSERT INTO "raw".metadata(match_id, map, start_at, duration, mode, season_id, cluster, rounds_played, _loaded_at, players_data, puuid, teams)
         VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
     ''')
-    values = (match_id, played_map, start_at, duration, mode, season_id, cluster, rounds_played, current_timestamp, players_data, puuid, teams_data)
-    sql_execute(sql,values)
+    generic.sql_execute(sql,values)
     return True
 
 @flow
-def get_match_flow(region,name,tag,puuid):
+def transform_and_load(result):
     url = 'https://api.henrikdev.xyz/valorant/v3/matches/'
+    dups_check_query = '''
+        SELECT match_id FROM raw.metadata WHERE match_id = %s;
+    '''
+    for player_info in result:
+        name = player_info[1]
+        tag = player_info[2]
+        region = player_info[3]
+        puuid = player_info[5]
     response=get_match_details(region,name,tag,url)
     if response.json()['status'] == 200:
-        match_data_response = get_match_data(response)
+        match_data_response = get_match_data_in_list(response)
         for match in match_data_response:
             match_id = str(match['metadata']['matchid'])
-            print(type(match_id))
-
-            if metadata_dups_handler(match_id):
-                filtered_data(match,puuid)
+            if generic.dups_handler(dups_check_query,params=(match_id)):
+                transformed_data = transformation(match,puuid)
+                load_into_warehouse(transformed_data)
             else:
                 pass
     else:
         pass
     return True
 
-@flow
-def record_iteration(result):
-    for player_info in result:
-        print(player_info)
-        name = player_info[1]
-        tag = player_info[2]
-        region = player_info[3]
-        puuid = player_info[5]
-        get_match_flow(region,name,tag,puuid)
 
 @flow(name = 'Valorant_Data_Extract')
 def pull_data():
     result = get_player_details()
-    record_iteration(result)
+    transform_and_load(result)
 
 pull_data()
 

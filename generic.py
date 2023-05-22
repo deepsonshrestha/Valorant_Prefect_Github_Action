@@ -77,3 +77,24 @@ def connect_to_web_database(sql):
             cursor.close()
             connection.close()
             return player_records
+        
+def connect_to_raw_database(sql):
+    try:
+        connection = psycopg2.connect(database="DataWarehouse",
+                                host="db.yzqgftlyckkypgpmyjig.supabase.co",
+                                user="postgres",
+                                password="d7d8xAQuj7GSDvst",
+                                port="5432")
+        cursor = connection.cursor()
+        postgreSQL_select_Query = sql
+        cursor.execute(postgreSQL_select_Query)
+        records = cursor.fetchall()
+
+    except (Exception, psycopg2.Error) as error:
+        print("Error while fetching data from PostgreSQL", error)
+
+    finally:
+        if connection:
+            cursor.close()
+            connection.close()
+            return records
