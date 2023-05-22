@@ -76,7 +76,7 @@ def connect_to_web_database(sql):
         if connection:
             cursor.close()
             connection.close()
-            return player_records
+        return player_records
         
 def connect_to_raw_database(sql):
     try:
