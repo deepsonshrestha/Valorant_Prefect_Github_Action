@@ -138,7 +138,7 @@ def get_match_flow(region,name,tag,puuid):
         pass
     return True
 
-@task
+@flow
 def record_iteration(result):
     for player_info in result:
         print(player_info)
@@ -152,8 +152,8 @@ def record_iteration(result):
 def pull_data():
     result = get_player_details()
     record_iteration(result)
-    print('pulled') # use loggers instead of prints
+    # print('pulled')
 
 pull_data()
 
-# dont use logics inside flows
+
