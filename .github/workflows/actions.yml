@@ -1,4 +1,4 @@
-name: run main.py
+name: Get match details (30 min refresh)
 
 on:
   schedule:

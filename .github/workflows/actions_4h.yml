@@ -1,4 +1,4 @@
-name: Every four hours
+name: Get user details (4 hour refresh)
 
 on:
   schedule:
