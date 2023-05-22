@@ -44,10 +44,10 @@ def transformation(response_data, puuid):
     
 @task
 def load_into_warehouse(values):
-    sql = ('''
+    sql = '''
         INSERT INTO "raw".metadata(match_id, map, start_at, duration, mode, season_id, cluster, rounds_played, _loaded_at, players_data, puuid, teams)
         VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
-    ''')
+    '''
     generic.sql_execute(sql,values)
     return True
 
