@@ -5,7 +5,11 @@ import psycopg2
 
 from datetime import timezone
 import datetime
+import os
    
+warehouse_conn_details = os.environ.get('WAREHOUSE_CONNECTION')
+web_db_conn_details = os.environ.get('WEB_DB_CONNECTION')
+
 def get_current_utc_timestamp():
     dt = datetime.datetime.now(timezone.utc)
     utc_time = dt.replace(tzinfo=timezone.utc)
@@ -13,11 +17,7 @@ def get_current_utc_timestamp():
 
 #functions for conencting to the warehouse
 def get_conn_details():
-    conn = psycopg2.connect(database="DataWarehouse",
-                            host="db.yzqgftlyckkypgpmyjig.supabase.co",
-                            user="postgres",
-                            password="d7d8xAQuj7GSDvst",
-                            port="5432")
+    conn = psycopg2.connect(warehouse_conn_details)
     conn.autocommit = True
     return conn
 
@@ -58,11 +58,7 @@ def dups_handler(dups_check_query,params):
 def connect_to_web_database(sql):
     player_records = []
     try:
-        connection = psycopg2.connect(database="Web",
-                                host="db.yzqgftlyckkypgpmyjig.supabase.co",
-                                user="postgres",
-                                password="d7d8xAQuj7GSDvst",
-                                port="5432")
+        connection = psycopg2.connect(web_db_conn_details)
         cursor = connection.cursor()
         postgreSQL_select_Query = sql
         cursor.execute(postgreSQL_select_Query)
@@ -80,11 +76,7 @@ def connect_to_web_database(sql):
 def connect_to_raw_database(sql):
     records = []
     try:
-        connection = psycopg2.connect(database="DataWarehouse",
-                                host="db.yzqgftlyckkypgpmyjig.supabase.co",
-                                user="postgres",
-                                password="d7d8xAQuj7GSDvst",
-                                port="5432")
+        connection = psycopg2.connect(warehouse_conn_details)
         cursor = connection.cursor()
         postgreSQL_select_Query = sql
         cursor.execute(postgreSQL_select_Query)
