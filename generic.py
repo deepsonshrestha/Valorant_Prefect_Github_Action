@@ -50,10 +50,8 @@ def dups_handler(dups_check_query,params):
     cursor.execute(sql, params)
     data = cursor.fetchone()
     if data is None:
-        print('No value in table')
         return True
     else:
-        print('Found in table')
         return False
 
 #functions to connect to web database

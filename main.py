@@ -2,6 +2,9 @@ import requests
 from prefect import task,flow
 import generic
 from datetime import timezone
+import os
+
+api_key = os.environ.get('API_KEY')
 
 @task
 def get_player_details():
@@ -14,7 +17,7 @@ def get_player_details():
 @task(retries=3,retry_delay_seconds=60)
 def get_match_details(region,name,tag,url):
     modified_url = str(url)+str(region)+'/'+str(name)+'/'+str(tag)
-    response = requests.get(modified_url ,headers={'Authorization': 'HDEV-4ce3185a-47f7-4bee-b5d9-df9c6b08866c'})
+    response = requests.get(modified_url ,headers={'Authorization': str(api_key)})
     return response
 
 @task
