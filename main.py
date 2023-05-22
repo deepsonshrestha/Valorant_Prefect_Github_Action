@@ -94,7 +94,7 @@ def get_match_data(response):
     listx = []
     for i in range(length):
         response_data = response.json()['data'][i]
-        listx.append(response_data)    
+        listx.append(response_data)
     return listx
 
 @task
@@ -120,8 +120,9 @@ def filtered_data(response_data, puuid):
     sql_execute(sql,values)
     return True
 
-@flow
-def get_match_flow(region,name,tag,url,puuid):
+@task
+def get_match_flow(region,name,tag,puuid):
+    url = 'https://api.henrikdev.xyz/valorant/v3/matches/'
     response=get_match_details(region,name,tag,url)
     if response.json()['status'] == 200:
         match_data_response = get_match_data(response)
@@ -137,17 +138,22 @@ def get_match_flow(region,name,tag,url,puuid):
         pass
     return True
 
-@flow(name = 'Valorant_Data_Extract')
-def pull_data():
-    result = get_player_details()
-    url = 'https://api.henrikdev.xyz/valorant/v3/matches/'
+@task
+def record_iteration(result):
     for player_info in result:
         print(player_info)
         name = player_info[1]
         tag = player_info[2]
         region = player_info[3]
         puuid = player_info[5]
-        get_match_flow(region,name,tag,url,puuid)
-    print('pulled')
+        get_match_flow(region,name,tag,puuid)
+
+@flow(name = 'Valorant_Data_Extract')
+def pull_data():
+    result = get_player_details()
+    record_iteration(result)
+    print('pulled') # use loggers instead of prints
 
 pull_data()
+
+# dont use logics inside flows
