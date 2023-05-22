@@ -120,7 +120,7 @@ def filtered_data(response_data, puuid):
     sql_execute(sql,values)
     return True
 
-@task
+@flow
 def get_match_flow(region,name,tag,puuid):
     url = 'https://api.henrikdev.xyz/valorant/v3/matches/'
     response=get_match_details(region,name,tag,url)
@@ -152,7 +152,6 @@ def record_iteration(result):
 def pull_data():
     result = get_player_details()
     record_iteration(result)
-    # print('pulled')
 
 pull_data()
 
