@@ -57,6 +57,7 @@ def dups_handler(dups_check_query,params):
 #functions to connect to web database
 def connect_to_web_database(sql):
     player_records = []
+    connection = False
     try:
         connection = psycopg2.connect(web_db_conn_details)
         cursor = connection.cursor()
@@ -75,6 +76,7 @@ def connect_to_web_database(sql):
         
 def connect_to_raw_database(sql):
     records = []
+    connection = False
     try:
         connection = psycopg2.connect(warehouse_conn_details)
         cursor = connection.cursor()
