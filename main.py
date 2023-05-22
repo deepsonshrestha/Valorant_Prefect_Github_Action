@@ -5,9 +5,9 @@ from datetime import timezone
 
 @task
 def get_player_details():
-    sql = ''''
+    sql ='''
         select * from "public".dashboard_user_in_game_details
-    '''
+        '''
     data = generic.connect_to_web_database(sql)
     return data
 
@@ -63,7 +63,7 @@ def transform_and_load(result):
         puuid = player_info[5]
 
         response=get_match_details(region,name,tag,url)
-        
+
         if response.json()['status'] == 200:
             match_data_response = get_match_data_in_list(response)
             for match in match_data_response:
