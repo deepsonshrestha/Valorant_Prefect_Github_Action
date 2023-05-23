@@ -20,9 +20,9 @@ def get_user_in_game_data():
             'valorant_puuid': record[5]    
         }
         list_records.append(record_dict)
-    send_in_game_data_to_warehouse(list_records)
-    return True
+    return list_records
 
+@task
 def send_in_game_data_to_warehouse(data):
     dups_check_query = '''
         SELECT user_id FROM raw.user_in_game_details
@@ -62,9 +62,7 @@ def get_user_social_account():
             '_data': record[5]
         }
         list_records.append(record_dict)
-
-    send_social_accounts_data_to_warehouse(list_records)
-    return True
+    return list_records
 
 @task
 def send_social_accounts_data_to_warehouse(data):
@@ -93,8 +91,9 @@ def send_social_accounts_data_to_warehouse(data):
 
 @flow(name = 'User Data Extract')
 def pull_data():
-    get_user_in_game_data()
-    get_user_social_account()
-    pass
+    in_game_data = get_user_in_game_data()
+    send_in_game_data_to_warehouse(in_game_data)
+    social_acc = get_user_social_account()
+    send_social_accounts_data_to_warehouse(social_acc)
 
 pull_data()
