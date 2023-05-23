@@ -17,7 +17,11 @@ def get_current_utc_timestamp():
 
 #functions for conencting to the warehouse
 def get_conn_details():
-    conn = psycopg2.connect(warehouse_conn_details)
+    conn = psycopg2.connect(database="DataWarehouse",
+                            host="db.yzqgftlyckkypgpmyjig.supabase.co",
+                            user="postgres",
+                            password="d7d8xAQuj7GSDvst",
+                            port="5432")
     conn.autocommit = True
     return conn
 
@@ -59,7 +63,11 @@ def connect_to_web_database(sql):
     player_records = []
     connection = False
     try:
-        connection = psycopg2.connect(web_db_conn_details)
+        connection = psycopg2.connect(database="Web",
+                                host="db.yzqgftlyckkypgpmyjig.supabase.co",
+                                user="postgres",
+                                password="d7d8xAQuj7GSDvst",
+                                port="5432")
         cursor = connection.cursor()
         postgreSQL_select_Query = sql
         cursor.execute(postgreSQL_select_Query)
@@ -78,7 +86,11 @@ def connect_to_raw_database(sql):
     records = []
     connection = False
     try:
-        connection = psycopg2.connect(warehouse_conn_details)
+        connection = psycopg2.connect(database="DataWarehouse",
+                                host="db.yzqgftlyckkypgpmyjig.supabase.co",
+                                user="postgres",
+                                password="d7d8xAQuj7GSDvst",
+                                port="5432")
         cursor = connection.cursor()
         postgreSQL_select_Query = sql
         cursor.execute(postgreSQL_select_Query)

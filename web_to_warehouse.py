@@ -62,7 +62,7 @@ def get_user_social_account():
             '_data': record[5]
         }
         list_records.append(record_dict)
-    print(list_records[1])
+
     send_social_accounts_data_to_warehouse(list_records)
     return True
 
