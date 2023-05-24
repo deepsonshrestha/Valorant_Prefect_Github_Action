@@ -7,8 +7,8 @@ from datetime import timezone
 import datetime
 import os
    
-warehouse_conn_details = os.environ.get('WAREHOUSE_CONNECTION')
-web_db_conn_details = os.environ.get('WEB_DB_CONNECTION')
+password = os.environ.get('PASSWORD')
+host_name = os.environ.get('HOST_NAME')
 
 def get_current_utc_timestamp():
     dt = datetime.datetime.now(timezone.utc)
@@ -18,9 +18,9 @@ def get_current_utc_timestamp():
 #functions for conencting to the warehouse
 def get_conn_details():
     conn = psycopg2.connect(database="DataWarehouse",
-                            host="db.yzqgftlyckkypgpmyjig.supabase.co",
-                            user="postgres",
-                            password="d7d8xAQuj7GSDvst",
+                            host= host_name,
+                            user= "postgres",
+                            password= password,
                             port="5432")
     conn.autocommit = True
     return conn
@@ -64,9 +64,9 @@ def connect_to_web_database(sql):
     connection = False
     try:
         connection = psycopg2.connect(database="Web",
-                                host="db.yzqgftlyckkypgpmyjig.supabase.co",
+                                host= host_name,
                                 user="postgres",
-                                password="d7d8xAQuj7GSDvst",
+                                password= password,
                                 port="5432")
         cursor = connection.cursor()
         postgreSQL_select_Query = sql
@@ -87,9 +87,9 @@ def connect_to_raw_database(sql):
     connection = False
     try:
         connection = psycopg2.connect(database="DataWarehouse",
-                                host="db.yzqgftlyckkypgpmyjig.supabase.co",
+                                host= host_name,
                                 user="postgres",
-                                password="d7d8xAQuj7GSDvst",
+                                password= password,
                                 port="5432")
         cursor = connection.cursor()
         postgreSQL_select_Query = sql
