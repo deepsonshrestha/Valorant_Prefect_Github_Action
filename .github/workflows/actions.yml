@@ -29,4 +29,6 @@ jobs:
       - name: execute py script
         env:
           API_KEY: ${{ secrets.API_KEY }}
+          HOST_NAME: ${{ secrets.HOST_NAME }}
+          PASSWORD: ${{ secrets.PASSWORD }}
         run: python main.py
