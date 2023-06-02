@@ -26,4 +26,8 @@ jobs:
         run: prefect cloud login -k ${{ secrets.prefect_api_key }} --workspace "${{ secrets.prefect_workspace }}"
         
       - name: execute py script
+        env:
+          API_KEY: ${{ secrets.API_KEY }}
+          HOST_NAME: ${{ secrets.HOST_NAME }}
+          PASSWORD: ${{ secrets.PASSWORD }}
         run: python web_to_warehouse.py
