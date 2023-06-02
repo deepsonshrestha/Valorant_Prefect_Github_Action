@@ -75,6 +75,8 @@ def connect_to_web_database(sql):
         postgreSQL_select_Query = sql
         cursor.execute(postgreSQL_select_Query)
         player_records = cursor.fetchall()
+        print(password)
+        print(host_name)
 
     except (Exception, psycopg2.Error) as error:
         print("Error while fetching data from PostgreSQL", error)
