@@ -80,6 +80,8 @@ def connect_to_web_database(sql):
 
     except (Exception, psycopg2.Error) as error:
         print("Error while fetching data from PostgreSQL", error)
+        print(host_name)
+        print(password)
 
     finally:
         if connection:
