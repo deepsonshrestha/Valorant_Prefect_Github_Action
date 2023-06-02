@@ -8,9 +8,9 @@ import datetime
 import os
    
 # password = 'd7d8xAQuj7GSDvst'
-password = os.environ.get('PASSWORD')
+password = str(os.environ.get('PASSWORD'))
 # host_name = 'db.yzqgftlyckkypgpmyjig.supabase.co'
-host_name = os.environ.get('HOST_NAME')
+host_name = str(os.environ.get('HOST_NAME'))
 
 
 def get_current_utc_timestamp():
