@@ -21,7 +21,7 @@ def get_current_utc_timestamp():
 def get_conn_details():
     conn = psycopg2.connect(database="DataWarehouse",
                             host= host_name,
-                            user= "postgres",
+                            user= "postgres.yzqgftlyckkypgpmyjig",
                             password= password,
                             port="5432")
     conn.autocommit = True
@@ -67,7 +67,7 @@ def connect_to_web_database(sql):
     try:
         connection = psycopg2.connect(database="Web",
                                 host= host_name,
-                                user="postgres",
+                                user="postgres.yzqgftlyckkypgpmyjig",
                                 password= password,
                                 port="5432")
         cursor = connection.cursor()
@@ -90,7 +90,7 @@ def connect_to_raw_database(sql):
     try:
         connection = psycopg2.connect(database="DataWarehouse",
                                 host= host_name,
-                                user="postgres",
+                                user="postgres.yzqgftlyckkypgpmyjig",
                                 password= password,
                                 port="5432")
         cursor = connection.cursor()
